@@ -4,21 +4,40 @@
 // Customize these for your own mod
 // ============================================================================
 
+const int TOTAL_LEVELS = 9;
+
+enum Level {
+    TOTAL, // Not an actual level, used for storing a total value of a variable that all levels share
+    HUB,
+    JUNGLE,
+    CANYON,
+    CHECKPT,
+    MINES,
+    FACTORY,
+    SWAMP,
+    TEMPLE
+}
+
+const int SECRETS_NEEDED[TOTAL_LEVELS] = {
+    33,  // TOTAL
+    13, // HUB
+    8,  // JUNGLE
+    6,  // CANYON
+    0,  // CHECKPT
+    6,  // MINES
+    0,  // FACTORY
+    0,  // SWAMP
+    0   // TEMPLE
+}
 
 class ObjectiveSetup : EventHandler
 {   
-
-    int totalSecrets;
-    int jungleSecrets;
-    int minesSecrets;
+    int secretsFound[TOTAL_LEVELS];
 
     int LevelsClearedOfEnemies;
 
-    int jungleKills;
-    bool jungleCleared;
-    int minesKills;
-    bool minesCleared;
-
+    int enemiesKilled[TOTAL_LEVELS];
+    bool enemiesCleared[TOTAL_LEVELS];
     
     bool objectivesInitialized; 
 
@@ -31,32 +50,34 @@ class ObjectiveSetup : EventHandler
         }
 
         if (!objectivesInitialized){
-            totalSecrets = 0;
-            jungleSecrets = 0;
-            minesSecrets = 0;
-
-            LevelsClearedOfEnemies = 0;
-            jungleKills = 0;
-            jungleCleared = false;
-            minesKills = 0;
-            minesCleared = false;
-
+            for (int i = 0; i < TOTAL_LEVELS; i++){
+                secretsFound[i] = 0;
+                enemiesKilled[i] = 0;
+                enemiesCleared[i] = false;
+            }
             objectivesInitialized = true;
         }
 
-        // Objective shown to all levels
+        // Objectives shown to all levels
+
         UniversalObjective.Add("Levels Cleared of Enemies", 4, UniversalObjective.TYPE_CUSTOM);
         UniversalObjective.UpdateProgress("Levels Cleared of Enemies", LevelsClearedOfEnemies);
 
         if (level.mapname ~== "jungle")
         {
+            UniversalObjective.Add("Find Jungle Secrets", SECRETS_NEEDED[JUNGLE], UniversalObjective.TYPE_CUSTOM);
+            UniversalObjective.UpdateProgress("Find Jungle Secrets", secretsFound[JUNGLE]);
+
             UniversalObjective.Add("All Jungle Enemies Killed", 142, UniversalObjective.TYPE_CUSTOM);
-            UniversalObjective.UpdateProgress("All Jungle Enemies Killed", jungleKills);
+            UniversalObjective.UpdateProgress("All Jungle Enemies Killed", enemiesKilled[JUNGLE]);
         }
         else if (level.mapname ~== "mines")
         {
+            UniversalObjective.Add("Find Mines Secrets", SECRETS_NEEDED[MINES], UniversalObjective.TYPE_CUSTOM);
+            UniversalObjective.UpdateProgress("Find Mines Secrets", secretsFound[MINES]);
+
             UniversalObjective.Add("All Mines Enemies Killed", 133, UniversalObjective.TYPE_CUSTOM);
-            UniversalObjective.UpdateProgress("All Mines Enemies Killed", minesKills);
+            UniversalObjective.UpdateProgress("All Mines Enemies Killed", enemiesKilled[MINES]);
         }
     }
 
@@ -66,15 +87,14 @@ class ObjectiveSetup : EventHandler
         if (e.Thing && !(e.Thing is "EnemyBarrel"))
         {
             if (level.mapname ~== "jungle"){
-                jungleKills++;
-                UniversalObjective.UpdateProgress("All Jungle Enemies Killed", jungleKills);
+                enemiesKilled[JUNGLE]++;
+                UniversalObjective.UpdateProgress("All Jungle Enemies Killed", enemiesKilled[JUNGLE]);
             }
             if (level.mapname ~== "mines"){
-                minesKills++;
-                UniversalObjective.UpdateProgress("All Mines Enemies Killed", minesKills);
+                enemiesKilled[MINES]++;
+                UniversalObjective.UpdateProgress("All Mines Enemies Killed", enemiesKilled[MINES]);
             }
         }
     }
-
     
 }
