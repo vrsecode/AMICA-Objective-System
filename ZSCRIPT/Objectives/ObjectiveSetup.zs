@@ -3,10 +3,11 @@
 // Objectives for Doom 2 with standard actors
 // Customize these for your own mod
 // ============================================================================
+//#define TOTAL_LEVELS 9
 
-const int TOTAL_LEVELS = 9;
+//const int TOTAL_LEVELS = 9;
 
-enum Level {
+enum LevelNum {
     TOTAL, // Not an actual level, used for storing a total value of a variable that all levels share
     HUB,
     JUNGLE,
@@ -16,22 +17,24 @@ enum Level {
     FACTORY,
     SWAMP,
     TEMPLE
-}
+};
 
-const int SECRETS_NEEDED[TOTAL_LEVELS] = {
-    33,  // TOTAL
-    13, // HUB
-    8,  // JUNGLE
-    6,  // CANYON
-    0,  // CHECKPT
-    6,  // MINES
-    0,  // FACTORY
-    0,  // SWAMP
-    0   // TEMPLE
-}
+// const int SECRETS_NEEDED[TOTAL_LEVELS] = {
+//     33,  // TOTAL
+//     13, // HUB
+//     8,  // JUNGLE
+//     6,  // CANYON
+//     0,  // CHECKPT
+//     6,  // MINES
+//     0,  // FACTORY
+//     0,  // SWAMP
+//     0   // TEMPLE
+// };
+const TOTAL_LEVELS = 9;
 
 class ObjectiveSetup : EventHandler
 {   
+    int secretsNeeded[TOTAL_LEVELS];
     int secretsFound[TOTAL_LEVELS];
 
     int LevelsClearedOfEnemies;
@@ -56,6 +59,18 @@ class ObjectiveSetup : EventHandler
                 enemiesCleared[i] = false;
             }
             objectivesInitialized = true;
+
+            Array<int> secretsNeeded = {
+                33,  // TOTAL
+                13, // HUB
+                8,  // JUNGLE
+                6,  // CANYON
+                0,  // CHECKPT
+                6,  // MINES
+                0,  // FACTORY
+                0,  // SWAMP
+                0   // TEMPLE
+            };
         }
 
         // Objectives shown to all levels
@@ -65,7 +80,7 @@ class ObjectiveSetup : EventHandler
 
         if (level.mapname ~== "jungle")
         {
-            UniversalObjective.Add("Find Jungle Secrets", SECRETS_NEEDED[JUNGLE], UniversalObjective.TYPE_CUSTOM);
+            UniversalObjective.Add("Find Jungle Secrets", secretsNeeded[JUNGLE], UniversalObjective.TYPE_CUSTOM);
             UniversalObjective.UpdateProgress("Find Jungle Secrets", secretsFound[JUNGLE]);
 
             UniversalObjective.Add("All Jungle Enemies Killed", 142, UniversalObjective.TYPE_CUSTOM);
@@ -73,7 +88,7 @@ class ObjectiveSetup : EventHandler
         }
         else if (level.mapname ~== "mines")
         {
-            UniversalObjective.Add("Find Mines Secrets", SECRETS_NEEDED[MINES], UniversalObjective.TYPE_CUSTOM);
+            UniversalObjective.Add("Find Mines Secrets", secretsNeeded[MINES], UniversalObjective.TYPE_CUSTOM);
             UniversalObjective.UpdateProgress("Find Mines Secrets", secretsFound[MINES]);
 
             UniversalObjective.Add("All Mines Enemies Killed", 133, UniversalObjective.TYPE_CUSTOM);
