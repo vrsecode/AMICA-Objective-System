@@ -3,9 +3,6 @@
 // Objectives for Doom 2 with standard actors
 // Customize these for your own mod
 // ============================================================================
-//#define TOTAL_LEVELS 9
-
-//const int TOTAL_LEVELS = 9;
 
 enum LevelNum {
     TOTAL, // Not an actual level, used for storing a total value of a variable that all levels share
@@ -19,17 +16,6 @@ enum LevelNum {
     TEMPLE
 };
 
-// const int SECRETS_NEEDED[TOTAL_LEVELS] = {
-//     33,  // TOTAL
-//     13, // HUB
-//     8,  // JUNGLE
-//     6,  // CANYON
-//     0,  // CHECKPT
-//     6,  // MINES
-//     0,  // FACTORY
-//     0,  // SWAMP
-//     0   // TEMPLE
-// };
 const TOTAL_LEVELS = 9;
 
 class ObjectiveSetup : EventHandler
@@ -39,6 +25,7 @@ class ObjectiveSetup : EventHandler
 
     int LevelsClearedOfEnemies;
 
+    int killsNeeded[TOTAL_LEVELS];
     int enemiesKilled[TOTAL_LEVELS];
     bool enemiesCleared[TOTAL_LEVELS];
     
@@ -60,17 +47,25 @@ class ObjectiveSetup : EventHandler
             }
             objectivesInitialized = true;
 
-            Array<int> secretsNeeded = {
-                33,  // TOTAL
-                13, // HUB
-                8,  // JUNGLE
-                6,  // CANYON
-                0,  // CHECKPT
-                6,  // MINES
-                0,  // FACTORY
-                0,  // SWAMP
-                0   // TEMPLE
-            };
+            secretsNeeded[0] = 33;  // TOTAL
+            secretsNeeded[1] = 13;  // HUB
+            secretsNeeded[2] = 8;   // JUNGLE
+            secretsNeeded[3] = 6;   // CANYON
+            secretsNeeded[4] = 0;   // CHECKPT
+            secretsNeeded[5] = 6;   // MINES
+            secretsNeeded[6] = 0;   // FACTORY
+            secretsNeeded[7] = 0;   // SWAMP
+            secretsNeeded[8] = 0;   // TEMPLE
+
+            killsNeeded[0] = 142 + 133;  // TOTAL
+            killsNeeded[1] = 0;          // HUB
+            killsNeeded[2] = 142;        // JUNGLE
+            killsNeeded[3] = 0;          // CANYON
+            killsNeeded[4] = 0;          // CHECKPT
+            killsNeeded[5] = 133;        // MINES
+            killsNeeded[6] = 0;          // FACTORY
+            killsNeeded[7] = 0;          // SWAMP
+            killsNeeded[8] = 0;          // TEMPLE
         }
 
         // Objectives shown to all levels
@@ -80,10 +75,10 @@ class ObjectiveSetup : EventHandler
 
         if (level.mapname ~== "jungle")
         {
-            UniversalObjective.Add("Find Jungle Secrets", secretsNeeded[JUNGLE], UniversalObjective.TYPE_CUSTOM);
+            UniversalObjective.Add("Find Jungle Secrets", secretsNeeded[2], UniversalObjective.TYPE_CUSTOM);
             UniversalObjective.UpdateProgress("Find Jungle Secrets", secretsFound[JUNGLE]);
 
-            UniversalObjective.Add("All Jungle Enemies Killed", 142, UniversalObjective.TYPE_CUSTOM);
+            UniversalObjective.Add("All Jungle Enemies Killed", killsNeeded[JUNGLE], UniversalObjective.TYPE_CUSTOM);
             UniversalObjective.UpdateProgress("All Jungle Enemies Killed", enemiesKilled[JUNGLE]);
         }
         else if (level.mapname ~== "mines")
@@ -91,7 +86,7 @@ class ObjectiveSetup : EventHandler
             UniversalObjective.Add("Find Mines Secrets", secretsNeeded[MINES], UniversalObjective.TYPE_CUSTOM);
             UniversalObjective.UpdateProgress("Find Mines Secrets", secretsFound[MINES]);
 
-            UniversalObjective.Add("All Mines Enemies Killed", 133, UniversalObjective.TYPE_CUSTOM);
+            UniversalObjective.Add("All Mines Enemies Killed", killsNeeded[MINES], UniversalObjective.TYPE_CUSTOM);
             UniversalObjective.UpdateProgress("All Mines Enemies Killed", enemiesKilled[MINES]);
         }
     }
