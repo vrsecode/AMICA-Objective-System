@@ -106,5 +106,35 @@ class ObjectiveSetup : EventHandler
             }
         }
     }
+
+    int lastSecretsCount;
+    string lastMapName;
+    
+    override void WorldTick()
+    {
+        int currentSecrets = level.found_secrets;
+
+        string currentMapName = level.mapname;
+
+        // if (currentMapName != lastMapName)
+        // {
+
+        // }
+        if (currentSecrets > lastSecretsCount && currentMapName == lastMapName)
+        {
+            secretsFound[TOTAL]++;
+            if (level.mapname ~== "jungle"){
+                secretsFound[JUNGLE]++;
+                UniversalObjective.UpdateProgress("Find Jungle Secrets", secretsFound[JUNGLE]);
+            }
+            if (level.mapname ~== "mines"){
+                secretsFound[MINES]++;
+                UniversalObjective.UpdateProgress("Find Mines Secrets", secretsFound[MINES]);
+            }
+        }
+
+        lastSecretsCount = currentSecrets;
+        lastMapName = currentMapName;
+    }   
     
 }
